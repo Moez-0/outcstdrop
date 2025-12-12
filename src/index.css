@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 95%;
+
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 95%;
+
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 95%;
+
+    --primary: 0 0% 70%;
+    --primary-foreground: 0 0% 4%;
+
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 95%;
+
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 55%;
+
+    --accent: 0 0% 70%;
+    --accent-foreground: 0 0% 4%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 95%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 0 0% 70%;
+
+    --radius: 0px;
+
+    /* Custom tokens */
+    --steel: 0 0% 70%;
+    --steel-glow: 0 0% 85%;
+    --void: 0 0% 4%;
+    --void-deep: 0 0% 2%;
+    --smoke: 0 0% 45%;
+  }
+
+  .dark {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 95%;
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 95%;
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 0 0% 70%;
+    --primary-foreground: 0 0% 4%;
+    --secondary: 0 0% 12%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 0 0% 15%;
+    --muted-foreground: 0 0% 55%;
+    --accent: 0 0% 70%;
+    --accent-foreground: 0 0% 4%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 95%;
+    --border: 0 0% 18%;
+    --input: 0 0% 18%;
+    --ring: 0 0% 70%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground font-mono antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: hsl(var(--primary));
+    color: hsl(var(--void));
+  }
+}
+
+@layer components {
+  .grain-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  }
+
+  .text-display {
+    @apply font-display uppercase tracking-tight leading-none;
+  }
+
+  .text-mono {
+    @apply font-mono uppercase tracking-widest text-sm;
+  }
+
+  .gradient-fade {
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      hsl(var(--void)) 100%
+    );
+  }
+
+  .gradient-fade-top {
+    background: linear-gradient(
+      to top,
+      transparent 0%,
+      hsl(var(--void) / 0.8) 100%
+    );
+  }
+
+  .steel-glow {
+    text-shadow: 0 0 20px hsl(var(--steel) / 0.5),
+                 0 0 40px hsl(var(--steel) / 0.3),
+                 0 0 80px hsl(var(--steel) / 0.1);
+  }
+
+  .button-mechanical {
+    @apply relative overflow-hidden transition-all duration-150;
+    @apply border border-foreground/20 bg-transparent;
+    @apply hover:bg-foreground hover:text-background;
+    @apply active:scale-[0.98] active:translate-y-[1px];
+  }
+
+  .button-primary {
+    @apply relative overflow-hidden transition-all duration-150;
+    @apply bg-primary text-primary-foreground font-display;
+    @apply hover:brightness-110;
+    @apply active:scale-[0.98] active:translate-y-[1px];
+  }
+
+  .glitch-hover {
+    @apply relative;
+  }
+
+  .glitch-hover:hover {
+    animation: glitch 0.3s ease-in-out;
+  }
+
+  @keyframes glitch {
+    0%, 100% { transform: translate(0); }
+    20% { transform: translate(-2px, 1px); }
+    40% { transform: translate(2px, -1px); }
+    60% { transform: translate(-1px, 2px); }
+    80% { transform: translate(1px, -2px); }
+  }
+
+  .scroll-reveal {
+    @apply opacity-0 translate-y-8;
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+
+  .scroll-reveal.visible {
+    @apply opacity-100 translate-y-0;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
