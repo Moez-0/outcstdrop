@@ -4,7 +4,7 @@ This file provides guidance to WARP (warp.dev) when working with code in this re
 
 ## Project overview
 
-This is a Lovable-generated single-page web app built with Vite, React, TypeScript, Tailwind CSS, and shadcn-ui. It implements an OUTCST-branded drop experience with a 3D T-shirt viewer, pre-order flow, and a small Supabase-backed dashboard for viewing pre-orders.
+This is a single-page web app built with Vite, React, TypeScript, Tailwind CSS, and shadcn-ui. It implements an OUTCST-branded drop experience with a 3D T-shirt viewer, pre-order flow, and a small Supabase-backed dashboard for viewing pre-orders.
 
 Key technologies:
 - Vite + React + TypeScript (`package.json`)

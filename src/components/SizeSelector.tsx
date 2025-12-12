@@ -3,7 +3,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
 
 interface SizeSelectorProps {
   isOpen: boolean;
@@ -17,47 +16,51 @@ const SizeSelector = ({ isOpen, onClose }: SizeSelectorProps) => {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const sizes = ["XS", "S", "M", "L", "XL"];
 
-  const handleSubmit = async () => {
-    if (!selectedSize || !name.trim() || !email.trim() || !phone.trim() || !address.trim()) {
-      toast({
-        title: "MISSING DETAILS",
-        description: "Please fill in all fields.",
-        variant: "destructive",
-      });
-      return;
-    }
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
 
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      toast({
-        title: "INVALID EMAIL",
-        description: "Please enter a valid email address.",
-        variant: "destructive",
-      });
-      return;
+    if (!name.trim()) newErrors.name = "Name is required";
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        newErrors.email = "Invalid email address";
+      }
     }
+    if (!phone.trim()) newErrors.phone = "Phone is required";
+    if (!address.trim()) newErrors.address = "Address is required";
+    if (!selectedSize) newErrors.size = "Please select a size";
+    if (quantity < 1 || quantity > 10) newErrors.quantity = "Quantity must be between 1 and 10";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async () => {
+    if (!validateForm()) return;
 
     setIsSubmitting(true);
 
     try {
       const payload = {
-        // "name" is treated as full name in the dashboard
         name: name.trim(),
         email: email.trim(),
         size: selectedSize,
         phone: phone.trim(),
         address: address.trim(),
+        quantity,
         status: "PENDING" as const,
       };
 
       const { error } = await supabase
         .from("pre_orders")
-        // Cast to never to bypass current generated Supabase types until the schema is updated
         .insert(payload as never);
 
       if (error) throw error;
@@ -68,14 +71,12 @@ const SizeSelector = ({ isOpen, onClose }: SizeSelectorProps) => {
       setEmail("");
       setPhone("");
       setAddress("");
+      setQuantity(1);
+      setErrors({});
       navigate("/success");
     } catch (error) {
       console.error("Error submitting pre-order:", error);
-      toast({
-        title: "SYSTEM ERROR",
-        description: "Failed to submit pre-order. Please try again.",
-        variant: "destructive",
-      });
+      setErrors({ submit: "Failed to submit pre-order. Please try again." });
     } finally {
       setIsSubmitting(false);
     }
@@ -88,10 +89,12 @@ const SizeSelector = ({ isOpen, onClose }: SizeSelectorProps) => {
     setEmail("");
     setPhone("");
     setAddress("");
+    setQuantity(1);
+    setErrors({});
   };
 
   const isFormComplete =
-    !!selectedSize && !!name.trim() && !!email.trim() && !!phone.trim() && !!address.trim();
+    !!selectedSize && !!name.trim() && !!email.trim() && !!phone.trim() && !!address.trim() && quantity >= 1 && quantity <= 10;
 
   return (
     <AnimatePresence>
@@ -112,11 +115,11 @@ const SizeSelector = ({ isOpen, onClose }: SizeSelectorProps) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="fixed inset-x-4 bottom-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-50 w-auto md:w-full md:max-w-md"
+            className="mb-20 md:mb-96 fixed inset-x-4 bottom-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-50 w-auto md:w-full md:max-w-md"
           >
-            <div className="bg-card border border-border p-8 max-h-[90vh] overflow-y-auto">
+            <div className="bg-card border border-border p-6 md:p-8 max-h-[90vh] overflow-y-auto">
               {/* Header */}
-              <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center justify-between mb-6 md:mb-8">
                 <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground">
                   PRE-ORDER DETAILS
                 </p>
@@ -128,74 +131,141 @@ const SizeSelector = ({ isOpen, onClose }: SizeSelectorProps) => {
                 </button>
               </div>
 
+              {/* Global error */}
+              {errors.submit && (
+                <div className="mb-6 p-3 border border-destructive/50 bg-destructive/10">
+                  <p className="font-mono text-xs text-destructive">{errors.submit}</p>
+                </div>
+              )}
+
               {/* Full name input */}
-              <div className="mb-6">
+              <div className="mb-4 md:mb-6">
                 <label className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground block mb-2">
                   FULL NAME
                 </label>
                 <input
                   type="text"
                   value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                    if (errors.name) setErrors({ ...errors, name: "" });
+                  }}
                   placeholder="Enter your full name"
-                  className="w-full bg-transparent border border-border px-4 py-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                  className={`w-full bg-transparent border px-4 py-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-colors ${
+                    errors.name ? "border-destructive" : "border-border focus:border-primary"
+                  }`}
                 />
+                {errors.name && (
+                  <p className="font-mono text-[10px] text-destructive mt-1">{errors.name}</p>
+                )}
               </div>
 
               {/* Email input */}
-              <div className="mb-6">
+              <div className="mb-4 md:mb-6">
                 <label className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground block mb-2">
                   EMAIL
                 </label>
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (errors.email) setErrors({ ...errors, email: "" });
+                  }}
                   placeholder="Enter your email"
-                  className="w-full bg-transparent border border-border px-4 py-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                  className={`w-full bg-transparent border px-4 py-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-colors ${
+                    errors.email ? "border-destructive" : "border-border focus:border-primary"
+                  }`}
                 />
+                {errors.email && (
+                  <p className="font-mono text-[10px] text-destructive mt-1">{errors.email}</p>
+                )}
               </div>
 
               {/* Phone input */}
-              <div className="mb-6">
+              <div className="mb-4 md:mb-6">
                 <label className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground block mb-2">
                   PHONE
                 </label>
                 <input
                   type="tel"
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                    if (errors.phone) setErrors({ ...errors, phone: "" });
+                  }}
                   placeholder="Enter your phone number"
-                  className="w-full bg-transparent border border-border px-4 py-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors"
+                  className={`w-full bg-transparent border px-4 py-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-colors ${
+                    errors.phone ? "border-destructive" : "border-border focus:border-primary"
+                  }`}
                 />
+                {errors.phone && (
+                  <p className="font-mono text-[10px] text-destructive mt-1">{errors.phone}</p>
+                )}
               </div>
 
               {/* Address input */}
-              <div className="mb-6">
+              <div className="mb-4 md:mb-6">
                 <label className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground block mb-2">
                   ADDRESS
                 </label>
                 <textarea
                   value={address}
-                  onChange={(e) => setAddress(e.target.value)}
+                  onChange={(e) => {
+                    setAddress(e.target.value);
+                    if (errors.address) setErrors({ ...errors, address: "" });
+                  }}
                   placeholder="Enter your shipping address"
-                  className="w-full bg-transparent border border-border px-4 py-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors min-h-[80px] resize-none"
+                  className={`w-full bg-transparent border px-4 py-3 font-mono text-sm text-foreground placeholder:text-muted-foreground focus:outline-none transition-colors min-h-[80px] resize-none ${
+                    errors.address ? "border-destructive" : "border-border focus:border-primary"
+                  }`}
                 />
+                {errors.address && (
+                  <p className="font-mono text-[10px] text-destructive mt-1">{errors.address}</p>
+                )}
+              </div>
+
+              {/* Quantity input */}
+              <div className="mb-4 md:mb-6">
+                <label className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground block mb-2">
+                  QUANTITY
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  max="10"
+                  value={quantity}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value) || 1;
+                    setQuantity(Math.max(1, Math.min(10, val)));
+                    if (errors.quantity) setErrors({ ...errors, quantity: "" });
+                  }}
+                  className={`w-full bg-transparent border px-4 py-3 font-mono text-sm text-foreground focus:outline-none transition-colors ${
+                    errors.quantity ? "border-destructive" : "border-border focus:border-primary"
+                  }`}
+                />
+                {errors.quantity && (
+                  <p className="font-mono text-[10px] text-destructive mt-1">{errors.quantity}</p>
+                )}
+                <p className="font-mono text-[9px] text-muted-foreground mt-1">Max 10 per order</p>
               </div>
 
               {/* Size selection */}
-              <div className="mb-8">
+              <div className="mb-6 md:mb-8">
                 <label className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground block mb-3">
                   SELECT SIZE
                 </label>
-                <div className="grid grid-cols-5 gap-3">
+                <div className="grid grid-cols-5 gap-2 md:gap-3">
                   {sizes.map((size) => (
                     <motion.button
                       key={size}
-                      onClick={() => setSelectedSize(size)}
+                      onClick={() => {
+                        setSelectedSize(size);
+                        if (errors.size) setErrors({ ...errors, size: "" });
+                      }}
                       whileTap={{ scale: 0.95 }}
                       className={`
-                        py-4 font-mono text-sm tracking-wider border transition-all duration-200
+                        py-3 md:py-4 font-mono text-sm tracking-wider border transition-all duration-200
                         ${
                           selectedSize === size
                             ? "bg-primary text-primary-foreground border-primary"
@@ -207,6 +277,9 @@ const SizeSelector = ({ isOpen, onClose }: SizeSelectorProps) => {
                     </motion.button>
                   ))}
                 </div>
+                {errors.size && (
+                  <p className="font-mono text-[10px] text-destructive mt-2">{errors.size}</p>
+                )}
               </div>
 
               {/* Submit button */}

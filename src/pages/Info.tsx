@@ -47,10 +47,10 @@ const Info = () => {
               CONTACT
             </p>
             <a
-              href="mailto:info@outcst.io"
+              href="mailto:merch@putcst.space"
               className="font-display text-3xl md:text-5xl tracking-wide text-foreground hover:text-primary transition-colors duration-300 glitch-hover"
             >
-              INFO@OUTCST.IO
+              MERCH@OUTCST.SPACE
             </a>
           </motion.div>
         </div>

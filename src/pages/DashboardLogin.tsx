@@ -98,10 +98,6 @@ const DashboardLogin = () => {
             ENTER DASHBOARD
           </motion.button>
         </form>
-
-        <p className="mt-6 text-center font-mono text-[10px] tracking-[0.3em] text-muted-foreground">
-          CREDENTIALS ARE LOCAL TO THIS DEPLOYMENT
-        </p>
       </motion.div>
     </main>
   );

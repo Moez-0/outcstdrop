@@ -33,22 +33,22 @@ const Navbar = () => {
           : "bg-transparent"
       )}
     >
-      <div className="container mx-auto px-6 md:px-12">
-        <div className="flex items-center justify-between h-20">
+      <div className="container mx-auto px-4 md:px-6 lg:px-12">
+        <div className="flex items-center justify-between h-16 md:h-20">
           <Link
             to="/"
-            className="font-display text-2xl tracking-wider text-foreground hover:text-primary transition-colors duration-300"
+            className="font-display text-xl md:text-2xl tracking-wider text-foreground hover:text-primary transition-colors duration-300"
           >
             OUTCST
           </Link>
 
-          <div className="flex items-center gap-12">
+          <div className="flex items-center gap-6 md:gap-12">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 to={link.href}
                 className={cn(
-                  "font-mono text-xs tracking-[0.3em] uppercase transition-colors duration-300 glitch-hover",
+                  "font-mono text-[10px] md:text-xs tracking-[0.3em] uppercase transition-colors duration-300 glitch-hover min-h-[44px] flex items-center",
                   location.pathname === link.href
                     ? "text-primary"
                     : "text-muted-foreground hover:text-foreground"

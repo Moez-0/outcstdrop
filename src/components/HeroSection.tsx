@@ -52,15 +52,15 @@ const HeroSection = ({ onPreOrderClick }: HeroSectionProps) => {
           transition={{ duration: 1.2, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
           className="text-center"
         >
-          <p className="font-mono text-xs tracking-[0.5em] text-muted-foreground mb-4">
+          <p className="font-mono text-[10px] md:text-xs tracking-[0.5em] text-muted-foreground mb-4">
             DROP_001
           </p>
           
-          <h1 className="font-display text-[15vw] md:text-[12vw] leading-[0.85] tracking-tight text-foreground mb-6">
+          <h1 className="font-display text-[18vw] sm:text-[15vw] md:text-[12vw] leading-[0.85] tracking-tight text-foreground mb-6">
             OUTCST
           </h1>
 
-          <p className="font-mono text-xs tracking-[0.4em] text-primary mb-12 animate-pulse-glow">
+          <p className="font-mono text-[10px] md:text-xs tracking-[0.4em] text-primary mb-8 md:mb-12 animate-pulse-glow">
             LIMITED RUN
           </p>
 
@@ -68,7 +68,7 @@ const HeroSection = ({ onPreOrderClick }: HeroSectionProps) => {
             onClick={onPreOrderClick}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="button-primary px-12 py-4 text-lg tracking-[0.2em]"
+            className="button-primary px-8 md:px-12 py-3 md:py-4 text-base md:text-lg tracking-[0.2em] min-h-[44px]"
           >
             PRE-ORDER
           </motion.button>
@@ -79,15 +79,15 @@ const HeroSection = ({ onPreOrderClick }: HeroSectionProps) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 1 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3"
+          className="absolute bottom-8 md:bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 md:gap-3"
         >
-          <p className="font-mono text-[10px] tracking-[0.3em] text-muted-foreground">
+          <p className="font-mono text-[9px] md:text-[10px] tracking-[0.3em] text-muted-foreground">
             SCROLL
           </p>
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-            className="w-px h-12 bg-gradient-to-b from-primary/50 to-transparent"
+            className="w-px h-8 md:h-12 bg-gradient-to-b from-primary/50 to-transparent"
           />
         </motion.div>
       </motion.div>

@@ -6,14 +6,12 @@ interface ProductDetailsProps {
 
 const ProductDetails = ({ onSelectSize }: ProductDetailsProps) => {
   const specs = [
-    { label: "FABRIC", value: "240 GSM" },
-    { label: "CUT", value: "OVERSIZED" },
     { label: "PRINT", value: "SCREEN" },
     { label: "MADE FOR", value: "LATE NIGHTS" },
   ];
 
   return (
-    <section className="py-24 px-6 md:px-12">
+    <section className="py-16 md:py-24 px-4 md:px-6 lg:px-12">
       <div className="container mx-auto max-w-4xl">
         {/* Product specs */}
         <motion.div
@@ -21,7 +19,7 @@ const ProductDetails = ({ onSelectSize }: ProductDetailsProps) => {
           whileInView={{ opacity: 1 }}
           transition={{ duration: 1 }}
           viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-16"
+          className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 mb-12 md:mb-16"
         >
           {specs.map((spec, index) => (
             <motion.div
@@ -43,7 +41,7 @@ const ProductDetails = ({ onSelectSize }: ProductDetailsProps) => {
         </motion.div>
 
         {/* Divider */}
-        <div className="w-full h-px bg-border mb-16" />
+        <div className="w-full h-px bg-border mb-12 md:mb-16" />
 
         {/* CTA Section */}
         <motion.div
@@ -53,10 +51,10 @@ const ProductDetails = ({ onSelectSize }: ProductDetailsProps) => {
           viewport={{ once: true }}
           className="flex flex-col items-center text-center"
         >
-          <h2 className="font-display text-5xl md:text-7xl tracking-tight mb-4">
+          <h2 className="font-display text-4xl md:text-5xl lg:text-7xl tracking-tight mb-4">
             DROP_001
           </h2>
-          <p className="font-mono text-xs tracking-[0.3em] text-muted-foreground mb-12 max-w-md">
+          <p className="font-mono text-[10px] md:text-xs tracking-[0.3em] text-muted-foreground mb-8 md:mb-12 max-w-md px-4">
             LIMITED QUANTITY / NO RESTOCK / PRE-ORDER ONLY
           </p>
 
@@ -64,7 +62,7 @@ const ProductDetails = ({ onSelectSize }: ProductDetailsProps) => {
             onClick={onSelectSize}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            className="button-mechanical px-12 py-4 font-mono text-sm tracking-[0.2em]"
+            className="button-mechanical px-8 md:px-12 py-3 md:py-4 font-mono text-xs md:text-sm tracking-[0.2em] min-h-[44px]"
           >
             SELECT SIZE
           </motion.button>
