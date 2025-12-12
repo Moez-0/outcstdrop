@@ -115,7 +115,7 @@ const SizeSelector = ({ isOpen, onClose }: SizeSelectorProps) => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="mb-20 md:mb-96 fixed inset-x-4 bottom-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-50 w-auto md:w-full md:max-w-md"
+            className="mb-4 md:mb-96 fixed inset-x-4 bottom-4 md:inset-auto md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-50 w-auto md:w-full md:max-w-md"
           >
             <div className="bg-card border border-border p-6 md:p-8 max-h-[90vh] overflow-y-auto">
               {/* Header */}
